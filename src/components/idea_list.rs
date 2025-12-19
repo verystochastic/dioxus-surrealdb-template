@@ -1,5 +1,4 @@
 use crate::server_functions::{delete_idea_server, get_all_ideas_server};
-use dioxus::document::eval;
 use dioxus::prelude::*;
 
 const IDEA_LIST_CSS: Asset = asset!("/assets/styling/idea_list.css");
@@ -13,56 +12,6 @@ pub fn IdeaList(refresh_trigger: Signal<u32>, on_delete_success: EventHandler<()
         let _ = refresh_trigger();
         get_all_ideas_server().await
     });
-
-    // Delete handler with confirmation
-    let handle_delete = move |idea_id: String| async move {
-        // Debug: log the ID we're trying to delete
-        #[cfg(target_arch = "wasm32")]
-        web_sys::console::log_1(&format!("🔍 Attempting to delete idea with ID: {}", idea_id).into());
-
-        // Show browser confirmation dialog using eval
-        #[cfg(target_arch = "wasm32")]
-        web_sys::console::log_1(&"📋 About to show confirmation dialog".into());
-
-        let confirmed = match eval(r#"confirm("Delete this idea?")"#).recv::<bool>().await {
-            Ok(val) => {
-                #[cfg(target_arch = "wasm32")]
-                web_sys::console::log_1(&format!("✅ Confirmation result: {}", val).into());
-                val
-            }
-            Err(e) => {
-                #[cfg(target_arch = "wasm32")]
-                web_sys::console::log_1(&format!("❌ Confirmation error: {:?}", e).into());
-                false
-            }
-        };
-
-        #[cfg(target_arch = "wasm32")]
-        web_sys::console::log_1(&format!("🤔 Confirmed value: {}", confirmed).into());
-
-        if confirmed {
-            #[cfg(target_arch = "wasm32")]
-            web_sys::console::log_1(&"✅ User confirmed deletion - calling server".into());
-
-            // Call server function to delete
-            match delete_idea_server(idea_id.clone()).await {
-                Ok(_) => {
-                    #[cfg(target_arch = "wasm32")]
-                    web_sys::console::log_1(&"🎉 Delete successful, refreshing list".into());
-
-                    // Notify parent to refresh the list
-                    on_delete_success.call(());
-                }
-                Err(e) => {
-                    #[cfg(target_arch = "wasm32")]
-                    web_sys::console::log_1(&format!("💥 Delete failed: {}", e).into());
-                }
-            }
-        } else {
-            #[cfg(target_arch = "wasm32")]
-            web_sys::console::log_1(&"❌ User cancelled deletion".into());
-        }
-    };
 
     rsx! {
         document::Link { rel: "stylesheet", href: IDEA_LIST_CSS }
@@ -84,20 +33,55 @@ pub fn IdeaList(refresh_trigger: Signal<u32>, on_delete_success: EventHandler<()
                                     class: "idea-header",
                                     h3 { "{idea.title}" }
                                     // Delete button (only if idea has an ID)
-                                    if let Some(ref id) = idea.id {
-                                        button {
+                                    if let Some(id) = &idea.id {
+                                        {
+                                            let id = id.to_owned();
+                                            rsx! { button {
                                             r#type: "button",
                                             class: "delete-btn",
-                                            onclick: {
+                                            onclick: move |evt| {
+                                                evt.prevent_default();
+                                                evt.stop_propagation();
+
                                                 let id = id.clone();
-                                                move |evt| {
-                                                    evt.prevent_default();
-                                                    evt.stop_propagation();
-                                                    let id = id.clone();
-                                                    spawn(handle_delete(id));
-                                                }
+
+                                                spawn(async move {
+                                                    #[cfg(target_arch = "wasm32")]
+                                                    web_sys::console::log_1(&format!("🔍 Delete clicked for ID: {}", id).into());
+
+                                                    // Use native JavaScript confirm
+                                                    #[cfg(target_arch = "wasm32")]
+                                                    let confirmed = {
+                                                        let window = web_sys::window().expect("no global window");
+                                                        window.confirm_with_message("Delete this idea?").unwrap_or(false)
+                                                    };
+
+                                                    #[cfg(not(target_arch = "wasm32"))]
+                                                    let confirmed = false;
+
+                                                    #[cfg(target_arch = "wasm32")]
+                                                    web_sys::console::log_1(&format!("🤔 Confirmed: {}", confirmed).into());
+
+                                                    if confirmed {
+                                                        #[cfg(target_arch = "wasm32")]
+                                                        web_sys::console::log_1(&"✅ Calling delete_idea_server".into());
+
+                                                        match delete_idea_server(id).await {
+                                                            Ok(_) => {
+                                                                #[cfg(target_arch = "wasm32")]
+                                                                web_sys::console::log_1(&"🎉 Delete successful".into());
+                                                                on_delete_success.call(());
+                                                            }
+                                                            Err(_e) => {
+                                                                #[cfg(target_arch = "wasm32")]
+                                                                web_sys::console::log_1(&format!("💥 Delete failed: {}", _e).into());
+                                                            }
+                                                        }
+                                                    }
+                                                });
                                             },
                                             "×"
+                                        } }
                                         }
                                     }
                                 }
