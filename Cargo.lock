@@ -2118,6 +2118,7 @@ dependencies = [
  "serde",
  "surrealdb",
  "tokio",
+ "web-sys",
 ]
 
 [[package]]

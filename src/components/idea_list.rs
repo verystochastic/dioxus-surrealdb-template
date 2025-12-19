@@ -72,10 +72,13 @@ pub fn IdeaList(refresh_trigger: Signal<u32>, on_delete_success: EventHandler<()
                                     // Delete button (only if idea has an ID)
                                     if let Some(ref id) = idea.id {
                                         button {
+                                            r#type: "button",
                                             class: "delete-btn",
                                             onclick: {
                                                 let id = id.clone();
-                                                move |_| {
+                                                move |evt| {
+                                                    evt.prevent_default();
+                                                    evt.stop_propagation();
                                                     let id = id.clone();
                                                     spawn(handle_delete(id));
                                                 }
