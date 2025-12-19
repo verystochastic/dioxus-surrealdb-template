@@ -72,7 +72,7 @@ pub async fn delete_idea_server(id: String) -> Result<()> {
         // Split by ':' to get ["ideas", "xyz"]
         let parts: Vec<&str> = id.split(':').collect();
         if parts.len() != 2 {
-            return Err(ServerFnError::new(format!("Invalid ID format: {}", id)));
+            return Err(ServerFnError::new(format!("Invalid ID format: {}", id)).into());
         }
 
         let table = parts[0];  // "ideas"
