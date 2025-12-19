@@ -1,5 +1,6 @@
 use crate::server_functions::{delete_idea_server, get_all_ideas_server};
 use dioxus::prelude::*;
+use dioxus::document::eval;
 
 const IDEA_LIST_CSS: Asset = asset!("/assets/styling/idea_list.css");
 
@@ -28,9 +29,8 @@ pub fn IdeaList(refresh_trigger: Signal<u32>, on_delete_success: EventHandler<()
                     // Notify parent to refresh the list
                     on_delete_success.call(());
                 }
-                Err(e) => {
-                    // Log error
-                    tracing::error!("Failed to delete idea: {}", e);
+                Err(_e) => {
+                    // Error occurred - could show to user in future
                 }
             }
         }
