@@ -68,9 +68,19 @@ pub async fn delete_idea_server(id: String) -> Result<()> {
 
         let db = get_db().await;
 
-        // SurrealDB delete by full record ID string (format: "ideas:xyz")
-        let _deleted: Vec<crate::db::IdeaRecord> = db
-            .delete(id.as_str())
+        // Parse the ID string (format: "ideas:xyz") into table and ID parts
+        // Split by ':' to get ["ideas", "xyz"]
+        let parts: Vec<&str> = id.split(':').collect();
+        if parts.len() != 2 {
+            return Err(ServerFnError::new(format!("Invalid ID format: {}", id)));
+        }
+
+        let table = parts[0];  // "ideas"
+        let record_id = parts[1];  // "xyz"
+
+        // SurrealDB delete using tuple syntax (table, id)
+        let _deleted: Option<crate::db::IdeaRecord> = db
+            .delete((table, record_id))
             .await
             .map_err(|e| ServerFnError::new(format!("Delete failed for ID {}: {}", id, e)))?;
 
