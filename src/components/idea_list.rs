@@ -1,6 +1,6 @@
 use crate::server_functions::{delete_idea_server, get_all_ideas_server};
-use dioxus::prelude::*;
 use dioxus::document::eval;
+use dioxus::prelude::*;
 
 const IDEA_LIST_CSS: Asset = asset!("/assets/styling/idea_list.css");
 
@@ -16,11 +16,11 @@ pub fn IdeaList(refresh_trigger: Signal<u32>, on_delete_success: EventHandler<()
 
     // Delete handler with confirmation
     let handle_delete = move |idea_id: String| async move {
-        // Show browser confirmation dialog
-        let confirmed = eval(r#"confirm("Delete this idea?")"#)
-            .await
-            .as_bool()
-            .unwrap_or(false);
+        // Show browser confirmation dialog using eval
+        let confirmed = match eval(r#"confirm("Delete this idea?")"#).recv::<bool>().await {
+            Ok(val) => val,
+            Err(_) => false,
+        };
 
         if confirmed {
             // Call server function to delete
