@@ -37,7 +37,7 @@ A production-ready template for building fullstack web applications with **Dioxu
 
 #### Option 2: Manual Clone
 ```bash
-git clone https://github.com/YOUR_USERNAME/dioxus-surrealdb-template my-new-project
+git clone https://github.com/verystochastic/dioxus-surrealdb-template my-new-project
 cd my-new-project
 rm -rf .git
 git init
