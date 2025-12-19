@@ -58,3 +58,27 @@ pub async fn get_all_ideas_server() -> Result<Vec<Idea>> {
         Err(ServerFnError::new("Server-only function"))
     }
 }
+
+/// Delete an idea from the database by ID
+#[post("/api/ideas/delete")]
+pub async fn delete_idea_server(id: String) -> Result<()> {
+    #[cfg(feature = "server")]
+    {
+        use crate::db::server::get_db;
+
+        let db = get_db().await;
+
+        // SurrealDB delete operation using the ID string
+        let _deleted: Option<crate::db::IdeaRecord> = db
+            .delete(("ideas", &id))
+            .await
+            .map_err(|e| ServerFnError::new(e.to_string()))?;
+
+        Ok(())
+    }
+
+    #[cfg(not(feature = "server"))]
+    {
+        Err(ServerFnError::new("Server-only function"))
+    }
+}

@@ -1,17 +1,40 @@
-use crate::server_functions::get_all_ideas_server;
+use crate::server_functions::{delete_idea_server, get_all_ideas_server};
 use dioxus::prelude::*;
 
 const IDEA_LIST_CSS: Asset = asset!("/assets/styling/idea_list.css");
 
 /// Component to display all submitted ideas
 #[component]
-pub fn IdeaList(refresh_trigger: Signal<u32>) -> Element {
+pub fn IdeaList(refresh_trigger: Signal<u32>, on_delete_success: EventHandler<()>) -> Element {
     // Use use_resource to fetch ideas from server
     let ideas = use_resource(move || async move {
         // Re-run when refresh_trigger changes
         let _ = refresh_trigger();
         get_all_ideas_server().await
     });
+
+    // Delete handler with confirmation
+    let handle_delete = move |idea_id: String| async move {
+        // Show browser confirmation dialog
+        let confirmed = eval(r#"confirm("Delete this idea?")"#)
+            .await
+            .as_bool()
+            .unwrap_or(false);
+
+        if confirmed {
+            // Call server function to delete
+            match delete_idea_server(idea_id).await {
+                Ok(_) => {
+                    // Notify parent to refresh the list
+                    on_delete_success.call(());
+                }
+                Err(e) => {
+                    // Log error
+                    tracing::error!("Failed to delete idea: {}", e);
+                }
+            }
+        }
+    };
 
     rsx! {
         document::Link { rel: "stylesheet", href: IDEA_LIST_CSS }
@@ -28,7 +51,25 @@ pub fn IdeaList(refresh_trigger: Signal<u32>) -> Element {
                         for idea in ideas_vec {
                             div {
                                 class: "idea-card",
-                                h3 { "{idea.title}" }
+                                // Header with title and delete button
+                                div {
+                                    class: "idea-header",
+                                    h3 { "{idea.title}" }
+                                    // Delete button (only if idea has an ID)
+                                    if let Some(ref id) = idea.id {
+                                        button {
+                                            class: "delete-btn",
+                                            onclick: {
+                                                let id = id.clone();
+                                                move |_| {
+                                                    let id = id.clone();
+                                                    spawn(handle_delete(id));
+                                                }
+                                            },
+                                            "×"
+                                        }
+                                    }
+                                }
                                 p { class: "description", "{idea.description}" }
                                 if !idea.tags.is_empty() {
                                     div {

@@ -16,7 +16,10 @@ pub fn Home() -> Element {
                 }
             }
             IdeaList {
-                refresh_trigger: refresh_trigger
+                refresh_trigger: refresh_trigger,
+                on_delete_success: move |_| {
+                    *refresh_trigger.write() += 1;
+                }
             }
         }
     }
