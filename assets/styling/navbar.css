@@ -1,0 +1,16 @@
+#navbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 20px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #000000;
+}
+
+#navbar h1 {
+  margin: 0;
+  font-size: 18px;
+  color: #000000;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}

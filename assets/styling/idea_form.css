@@ -1,0 +1,90 @@
+#idea-form-container {
+  max-width: 600px;
+  width: 100%;
+  margin: 30px 0;
+  padding: 0;
+}
+
+#idea-form-container h2 {
+  margin: 0 0 30px 0;
+  color: #000000;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+#idea-form-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+#idea-form-container .form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#idea-form-container label {
+  color: #000000;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+#idea-form-container input,
+#idea-form-container textarea {
+  width: 100%;
+  padding: 8px 0;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid #000000;
+  color: #000000;
+  outline: none;
+  font-family: inherit;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+#idea-form-container input::placeholder,
+#idea-form-container textarea::placeholder {
+  color: #999999;
+}
+
+#idea-form-container input:focus,
+#idea-form-container textarea:focus {
+  border-bottom-color: #000000;
+}
+
+#idea-form-container textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+#idea-form-container .submit-btn {
+  background: none;
+  border: none;
+  color: #000000;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+  margin: 10px 0 0 0;
+  text-align: left;
+  font-family: inherit;
+  text-decoration: underline;
+}
+
+#idea-form-container .submit-btn:hover:not(:disabled) {
+  opacity: 0.6;
+}
+
+#idea-form-container .submit-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+#idea-form-container .message {
+  margin-top: 10px;
+  padding: 0;
+  color: #000000;
+  text-align: left;
+  font-size: 14px;
+}
