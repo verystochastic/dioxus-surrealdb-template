@@ -16,6 +16,10 @@ pub fn IdeaList(refresh_trigger: Signal<u32>, on_delete_success: EventHandler<()
 
     // Delete handler with confirmation
     let handle_delete = move |idea_id: String| async move {
+        // Debug: log the ID we're trying to delete
+        #[cfg(target_arch = "wasm32")]
+        web_sys::console::log_1(&format!("Attempting to delete idea with ID: {}", idea_id).into());
+
         // Show browser confirmation dialog using eval
         let confirmed = match eval(r#"confirm("Delete this idea?")"#).recv::<bool>().await {
             Ok(val) => val,
@@ -23,16 +27,26 @@ pub fn IdeaList(refresh_trigger: Signal<u32>, on_delete_success: EventHandler<()
         };
 
         if confirmed {
+            #[cfg(target_arch = "wasm32")]
+            web_sys::console::log_1(&"User confirmed deletion".into());
+
             // Call server function to delete
-            match delete_idea_server(idea_id).await {
+            match delete_idea_server(idea_id.clone()).await {
                 Ok(_) => {
+                    #[cfg(target_arch = "wasm32")]
+                    web_sys::console::log_1(&"Delete successful, refreshing list".into());
+
                     // Notify parent to refresh the list
                     on_delete_success.call(());
                 }
-                Err(_e) => {
-                    // Error occurred - could show to user in future
+                Err(e) => {
+                    #[cfg(target_arch = "wasm32")]
+                    web_sys::console::log_1(&format!("Delete failed: {}", e).into());
                 }
             }
+        } else {
+            #[cfg(target_arch = "wasm32")]
+            web_sys::console::log_1(&"User cancelled deletion".into());
         }
     };
 

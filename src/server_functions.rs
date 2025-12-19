@@ -68,11 +68,11 @@ pub async fn delete_idea_server(id: String) -> Result<()> {
 
         let db = get_db().await;
 
-        // SurrealDB delete operation using the ID string
-        let _deleted: Option<crate::db::IdeaRecord> = db
-            .delete(("ideas", &id))
+        // SurrealDB delete by full record ID string (format: "ideas:xyz")
+        let _deleted: Vec<crate::db::IdeaRecord> = db
+            .delete(id.as_str())
             .await
-            .map_err(|e| ServerFnError::new(e.to_string()))?;
+            .map_err(|e| ServerFnError::new(format!("Delete failed for ID {}: {}", id, e)))?;
 
         Ok(())
     }
