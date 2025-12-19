@@ -18,35 +18,49 @@ pub fn IdeaList(refresh_trigger: Signal<u32>, on_delete_success: EventHandler<()
     let handle_delete = move |idea_id: String| async move {
         // Debug: log the ID we're trying to delete
         #[cfg(target_arch = "wasm32")]
-        web_sys::console::log_1(&format!("Attempting to delete idea with ID: {}", idea_id).into());
+        web_sys::console::log_1(&format!("🔍 Attempting to delete idea with ID: {}", idea_id).into());
 
         // Show browser confirmation dialog using eval
+        #[cfg(target_arch = "wasm32")]
+        web_sys::console::log_1(&"📋 About to show confirmation dialog".into());
+
         let confirmed = match eval(r#"confirm("Delete this idea?")"#).recv::<bool>().await {
-            Ok(val) => val,
-            Err(_) => false,
+            Ok(val) => {
+                #[cfg(target_arch = "wasm32")]
+                web_sys::console::log_1(&format!("✅ Confirmation result: {}", val).into());
+                val
+            }
+            Err(e) => {
+                #[cfg(target_arch = "wasm32")]
+                web_sys::console::log_1(&format!("❌ Confirmation error: {:?}", e).into());
+                false
+            }
         };
+
+        #[cfg(target_arch = "wasm32")]
+        web_sys::console::log_1(&format!("🤔 Confirmed value: {}", confirmed).into());
 
         if confirmed {
             #[cfg(target_arch = "wasm32")]
-            web_sys::console::log_1(&"User confirmed deletion".into());
+            web_sys::console::log_1(&"✅ User confirmed deletion - calling server".into());
 
             // Call server function to delete
             match delete_idea_server(idea_id.clone()).await {
                 Ok(_) => {
                     #[cfg(target_arch = "wasm32")]
-                    web_sys::console::log_1(&"Delete successful, refreshing list".into());
+                    web_sys::console::log_1(&"🎉 Delete successful, refreshing list".into());
 
                     // Notify parent to refresh the list
                     on_delete_success.call(());
                 }
                 Err(e) => {
                     #[cfg(target_arch = "wasm32")]
-                    web_sys::console::log_1(&format!("Delete failed: {}", e).into());
+                    web_sys::console::log_1(&format!("💥 Delete failed: {}", e).into());
                 }
             }
         } else {
             #[cfg(target_arch = "wasm32")]
-            web_sys::console::log_1(&"User cancelled deletion".into());
+            web_sys::console::log_1(&"❌ User cancelled deletion".into());
         }
     };
 
