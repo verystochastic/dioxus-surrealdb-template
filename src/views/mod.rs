@@ -16,3 +16,6 @@ pub use blog::Blog;
 
 mod navbar;
 pub use navbar::Navbar;
+
+mod idea_development;
+pub use idea_development::IdeaDevelopment;

@@ -1,4 +1,5 @@
 use crate::server_functions::{delete_idea_server, get_all_ideas_server};
+use crate::Route;
 use dioxus::prelude::*;
 
 const IDEA_LIST_CSS: Asset = asset!("/assets/styling/idea_list.css");
@@ -28,18 +29,36 @@ pub fn IdeaList(refresh_trigger: Signal<u32>, on_delete_success: EventHandler<()
                         for idea in ideas_vec {
                             div {
                                 class: "idea-card",
-                                // Header with title and delete button
+                                // Header with title and action buttons
                                 div {
                                     class: "idea-header",
                                     h3 { "{idea.title}" }
-                                    // Delete button (only if idea has an ID)
-                                    if let Some(id) = &idea.id {
-                                        {
-                                            let id = id.to_owned();
-                                            rsx! { button {
-                                            r#type: "button",
-                                            class: "delete-btn",
-                                            onclick: move |evt| {
+
+                                    div {
+                                        class: "idea-actions",
+
+                                        // Develop button (only if idea has an ID)
+                                        if let Some(id) = &idea.id {
+                                            {
+                                                let id = id.to_owned();
+                                                rsx! {
+                                                    Link {
+                                                        to: Route::IdeaDevelopment { id: id.clone() },
+                                                        class: "develop-btn",
+                                                        "→"
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        // Delete button (only if idea has an ID)
+                                        if let Some(id) = &idea.id {
+                                            {
+                                                let id = id.to_owned();
+                                                rsx! { button {
+                                                r#type: "button",
+                                                class: "delete-btn",
+                                                onclick: move |evt| {
                                                 evt.prevent_default();
                                                 evt.stop_propagation();
 
@@ -82,6 +101,7 @@ pub fn IdeaList(refresh_trigger: Signal<u32>, on_delete_success: EventHandler<()
                                             },
                                             "×"
                                         } }
+                                            }
                                         }
                                     }
                                 }

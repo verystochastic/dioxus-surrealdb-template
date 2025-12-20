@@ -1,0 +1,196 @@
+.idea-development {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* Idea Header (read-only display) */
+.idea-development .idea-header {
+  margin-bottom: 60px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.idea-development .idea-header h1 {
+  font-size: 36px;
+  font-weight: 300;
+  letter-spacing: -0.5px;
+  margin: 0 0 20px 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.idea-development .idea-header .description {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0 0 20px 0;
+  color: #333;
+}
+
+.idea-development .idea-header .tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.idea-development .idea-header .tag {
+  background: #f5f5f5;
+  padding: 4px 10px;
+  font-size: 11px;
+  border: 1px solid #e0e0e0;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* What Must Be True Section */
+.wmbt-section {
+  margin-bottom: 60px;
+}
+
+.wmbt-section h2 {
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+  margin: 0 0 30px 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.wmbt-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+}
+
+.wmbt-item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.wmbt-item input {
+  flex: 1;
+  padding: 12px 0;
+  border: none;
+  border-bottom: 1px solid #d0d0d0;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 15px;
+  background: transparent;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.wmbt-item input:focus {
+  border-bottom-color: #000;
+}
+
+.delete-wmbt {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  transition: color 0.2s;
+}
+
+.delete-wmbt:hover {
+  color: #000;
+}
+
+/* Add new statement */
+.add-wmbt {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.add-wmbt input {
+  flex: 1;
+  padding: 12px 0;
+  border: none;
+  border-bottom: 1px solid #d0d0d0;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 15px;
+  background: transparent;
+  outline: none;
+}
+
+.add-wmbt button {
+  background: #000;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+
+.add-wmbt button:hover {
+  opacity: 0.85;
+}
+
+/* Development Notes Section */
+.notes-section {
+  margin-bottom: 40px;
+}
+
+.notes-section h2 {
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+  margin: 0 0 30px 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.notes-section textarea {
+  width: 100%;
+  min-height: 300px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 15px;
+  line-height: 1.6;
+  resize: vertical;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.notes-section textarea:focus {
+  border-color: #000;
+}
+
+/* Saving indicator */
+.saving-indicator {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #000;
+  color: #fff;
+  padding: 10px 20px;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+}
+
+/* Loading/Error states */
+.loading,
+.error {
+  text-align: center;
+  padding: 40px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+.error {
+  color: #000;
+}
+
+.loading {
+  color: #666;
+}

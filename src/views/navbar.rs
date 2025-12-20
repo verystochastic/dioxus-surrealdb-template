@@ -11,7 +11,10 @@ pub fn Navbar() -> Element {
 
         div {
             id: "navbar",
-            h1 { "ideas..." }
+            Link {
+                to: Route::Home {},
+                h1 { "ideas..." }
+            }
         }
 
         // The `Outlet` component is used to render the next component inside the layout

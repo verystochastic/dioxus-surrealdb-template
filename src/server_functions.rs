@@ -17,6 +17,8 @@ pub async fn submit_idea_server(
             title,
             description,
             tags,
+            what_must_be_true: Vec::new(),
+            development_notes: String::new(),
         };
 
         // Insert into SurrealDB
@@ -85,6 +87,96 @@ pub async fn delete_idea_server(id: String) -> Result<()> {
             .map_err(|e| ServerFnError::new(format!("Delete failed for ID {}: {}", id, e)))?;
 
         Ok(())
+    }
+
+    #[cfg(not(feature = "server"))]
+    {
+        Err(ServerFnError::new("Server-only function"))
+    }
+}
+
+/// Get a single idea by ID
+#[post("/api/ideas/get")]
+pub async fn get_idea_by_id_server(id: String) -> Result<Idea> {
+    #[cfg(feature = "server")]
+    {
+        use crate::db::{server::get_db, IdeaRecord};
+
+        let db = get_db().await;
+
+        // Parse ID string (format: "ideas:xyz")
+        let parts: Vec<&str> = id.split(':').collect();
+        if parts.len() != 2 {
+            return Err(ServerFnError::new(format!("Invalid ID format: {}", id)).into());
+        }
+
+        let table = parts[0];
+        let record_id = parts[1];
+
+        // Get single record
+        let idea: Option<IdeaRecord> = db
+            .select((table, record_id))
+            .await
+            .map_err(|e| ServerFnError::new(format!("Failed to get idea {}: {}", id, e)))?;
+
+        match idea {
+            Some(record) => Ok(record.into()),
+            None => Err(ServerFnError::new(format!("Idea not found: {}", id)).into()),
+        }
+    }
+
+    #[cfg(not(feature = "server"))]
+    {
+        Err(ServerFnError::new("Server-only function"))
+    }
+}
+
+/// Update an existing idea
+#[post("/api/ideas/update")]
+pub async fn update_idea_server(
+    id: String,
+    title: String,
+    description: String,
+    tags: Vec<String>,
+    what_must_be_true: Vec<String>,
+    development_notes: String,
+) -> Result<Idea> {
+    #[cfg(feature = "server")]
+    {
+        use crate::db::{server::get_db, IdeaRecord};
+
+        let db = get_db().await;
+
+        // Parse ID
+        let parts: Vec<&str> = id.split(':').collect();
+        if parts.len() != 2 {
+            return Err(ServerFnError::new(format!("Invalid ID format: {}", id)).into());
+        }
+
+        let table = parts[0];
+        let record_id = parts[1];
+
+        // Create updated record (ID will be ignored in update)
+        let updated = IdeaRecord {
+            id: None,
+            title,
+            description,
+            tags,
+            what_must_be_true,
+            development_notes,
+        };
+
+        // Update in database
+        let result: Option<IdeaRecord> = db
+            .update((table, record_id))
+            .content(updated)
+            .await
+            .map_err(|e| ServerFnError::new(format!("Failed to update idea {}: {}", id, e)))?;
+
+        match result {
+            Some(record) => Ok(record.into()),
+            None => Err(ServerFnError::new(format!("Idea not found: {}", id)).into()),
+        }
     }
 
     #[cfg(not(feature = "server"))]

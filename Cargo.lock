@@ -2037,7 +2037,7 @@ dependencies = [
  "hyper",
  "hyper-util",
  "inventory",
- "lru",
+ "lru 0.16.2",
  "parking_lot",
  "pin-project",
  "rustc-hash 2.1.1",
@@ -2116,8 +2116,11 @@ dependencies = [
  "dioxus",
  "once_cell",
  "serde",
+ "serde_json",
  "surrealdb",
+ "tempfile",
  "tokio",
+ "uuid",
  "wasm-bindgen",
  "web-sys",
 ]
@@ -2277,6 +2280,12 @@ checksum = "d4b8a88685455ed29a21542a33abd9cb6510b6b129abadabdcef0f4c55bc8f61"
 dependencies = [
  "litrs",
 ]
+
+[[package]]
+name = "double-ended-peekable"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c0d05e1c0dbad51b52c38bda7adceef61b9efc2baf04acfe8726a8c4630a6f57"
 
 [[package]]
 name = "downcast-rs"
@@ -4028,6 +4037,15 @@ checksum = "b3bd0dd2cd90571056fdb71f6275fada10131182f84899f4b2a916e565d81d86"
 
 [[package]]
 name = "lru"
+version = "0.12.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "234cf4f4a04dc1f57e24b96cc0cd600cf2af460d4161ac5ecdd0af8e1f3b2a38"
+dependencies = [
+ "hashbrown 0.15.5",
+]
+
+[[package]]
+name = "lru"
 version = "0.16.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "96051b46fc183dc9cd4a223960ef37b9af631b55191852a8274bfef064cda20f"
@@ -5300,6 +5318,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "quick_cache"
+version = "0.6.18"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7ada44a88ef953a3294f6eb55d2007ba44646015e18613d2f213016379203ef3"
+dependencies = [
+ "ahash 0.8.12",
+ "equivalent",
+ "hashbrown 0.16.1",
+ "parking_lot",
+]
+
+[[package]]
 name = "quinn"
 version = "0.11.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5675,6 +5705,15 @@ dependencies = [
 
 [[package]]
 name = "revision"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "22f53179a035f881adad8c4d58a2c599c6b4a8325b989c68d178d7a34d1b1e4c"
+dependencies = [
+ "revision-derive 0.10.0",
+]
+
+[[package]]
+name = "revision"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "54b8ee532f15b2f0811eb1a50adf10d036e14a6cdae8d99893e7f3b921cb227d"
@@ -5682,10 +5721,21 @@ dependencies = [
  "chrono",
  "geo",
  "regex",
- "revision-derive",
+ "revision-derive 0.11.0",
  "roaring",
  "rust_decimal",
  "uuid",
+]
+
+[[package]]
+name = "revision-derive"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5f0ec466e5d8dca9965eb6871879677bef5590cf7525ad96cae14376efb75073"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.111",
 ]
 
 [[package]]
@@ -6657,7 +6707,7 @@ dependencies = [
  "pharos",
  "reblessive",
  "reqwest",
- "revision",
+ "revision 0.11.0",
  "ring",
  "rust_decimal",
  "rustls",
@@ -6732,13 +6782,13 @@ dependencies = [
  "pharos",
  "phf 0.11.3",
  "pin-project-lite",
- "quick_cache",
+ "quick_cache 0.5.2",
  "radix_trie",
  "rand 0.8.5",
  "rayon",
  "reblessive",
  "regex",
- "revision",
+ "revision 0.11.0",
  "ring",
  "rmpv",
  "roaring",
@@ -6756,6 +6806,7 @@ dependencies = [
  "strsim",
  "subtle",
  "surrealdb-rocksdb",
+ "surrealkv",
  "sysinfo",
  "tempfile",
  "thiserror 1.0.69",
@@ -6766,7 +6817,7 @@ dependencies = [
  "unicase",
  "url",
  "uuid",
- "vart",
+ "vart 0.8.1",
  "wasm-bindgen-futures",
  "wasmtimer",
  "ws_stream_wasm",
@@ -6795,6 +6846,25 @@ checksum = "057727f56d48825ddbe45e4e7401cda6e99d864fbc004e7474b4689a5e72c86d"
 dependencies = [
  "libc",
  "surrealdb-librocksdb-sys",
+]
+
+[[package]]
+name = "surrealkv"
+version = "0.9.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "08a5041979bdff8599a1d5f6cb7365acb9a79664e2a84e5c4fddac2b3969f7d1"
+dependencies = [
+ "ahash 0.8.12",
+ "bytes",
+ "chrono",
+ "crc32fast",
+ "double-ended-peekable",
+ "getrandom 0.2.16",
+ "lru 0.12.5",
+ "parking_lot",
+ "quick_cache 0.6.18",
+ "revision 0.10.0",
+ "vart 0.9.3",
 ]
 
 [[package]]
@@ -7642,6 +7712,12 @@ name = "vart"
 version = "0.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "87782b74f898179396e93c0efabb38de0d58d50bbd47eae00c71b3a1144dbbae"
+
+[[package]]
+name = "vart"
+version = "0.9.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b1982d899e57d646498709735f16e9224cf1e8680676ad687f930cf8b5b555ae"
 
 [[package]]
 name = "vcpkg"
