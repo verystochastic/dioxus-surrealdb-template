@@ -19,7 +19,6 @@ pub fn IdeaList(refresh_trigger: Signal<u32>, on_delete_success: EventHandler<()
 
         div {
             id: "idea-list-container",
-            h2 { "Submitted Ideas" }
 
             match ideas() {
                 Some(Ok(ideas_vec)) => rsx! {

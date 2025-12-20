@@ -5,7 +5,7 @@ const IDEA_FORM_CSS: Asset = asset!("/assets/styling/idea_form.css");
 
 /// Form component for submitting new ideas
 #[component]
-pub fn IdeaForm(on_submit_success: EventHandler<()>) -> Element {
+pub fn IdeaForm(on_submit_success: EventHandler<()>, on_cancel: EventHandler<()>) -> Element {
     // State for form inputs
     let mut title = use_signal(|| String::new());
     let mut description = use_signal(|| String::new());
@@ -83,11 +83,21 @@ pub fn IdeaForm(on_submit_success: EventHandler<()>) -> Element {
                     }
                 }
 
-                button {
-                    r#type: "submit",
-                    disabled: is_submitting(),
-                    class: "submit-btn",
-                    "submit idea"
+                div {
+                    class: "form-buttons",
+                    button {
+                        r#type: "submit",
+                        disabled: is_submitting(),
+                        class: "submit-btn",
+                        "submit idea"
+                    }
+                    button {
+                        r#type: "button",
+                        class: "cancel-btn",
+                        onclick: move |_| on_cancel.call(()),
+                        disabled: is_submitting(),
+                        "cancel"
+                    }
                 }
             }
 
